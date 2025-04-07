@@ -1,0 +1,96 @@
+import {
+    LineChart,
+    Line,
+    XAxis,
+    YAxis,
+    CartesianGrid,
+    Tooltip,
+    Legend,
+    ResponsiveContainer
+} from 'recharts';
+
+const ProfileGrowthSection = () => {
+    const handleExport = () => {
+        // Convert the data to CSV format
+        const csvContent = generateCSV(metrics);
+
+        // Create a Blob and trigger download
+        const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.setAttribute("download", "profile_growth_data.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    return (
+        <div className={`${true ? 'col-span-2' : 'col-span-1'} bg-white rounded-lg shadow-md`}>
+            <div className="flex justify-between items-center p-4">
+                <div className="flex flex-col">
+                    <h2 className="font-semibold text-md">Profile Growth & Discovery</h2>
+                    <p className="text-[12px] text-gray-600">
+                        Monitor Impressions and profile visit growth
+                    </p>
+                </div>
+
+                <div className="flex items-center space-x-4">
+                    <button className="bg-gray-100 text-[12px] text-gray-600 p-1 rounded-lg">
+                        This Year
+                    </button>
+                    <button
+                        className="px-4 py-1 bg-customOrange text-white text-[12px] rounded-md shadow-md hover:bg-orange-600"
+                        onClick={handleExport}
+                    >
+                        Export
+                    </button>
+                </div>
+            </div>
+            <div className="h-[498px] rounded-lg">
+                <ResponsiveContainer width="95%" height="100%">
+                    <LineChart className="text-[10px]" data={metrics}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="month" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line
+                            type="monotone"
+                            dataKey="Impressions"
+                            stroke="#0FC578B5"
+                            strokeWidth={4}
+                            dot={false}
+                        />
+                    </LineChart>
+                </ResponsiveContainer>
+            </div>
+        </div>
+    );
+};
+
+const metrics = [
+    { month: 'January', Impressions: 2000, ProfileVisits: 4000 },
+    { month: 'February', Impressions: 3000, ProfileVisits: 3000 },
+    { month: 'March', Impressions: 4000, ProfileVisits: 5000 },
+    { month: 'April', Impressions: 2000, ProfileVisits: 4000 },
+    { month: 'May', Impressions: 3000, ProfileVisits: 3000 },
+    { month: 'June', Impressions: 5000, ProfileVisits: 4500 },
+    { month: 'July', Impressions: 4000, ProfileVisits: 5500 },
+    { month: 'August', Impressions: 4500, ProfileVisits: 5000 },
+    { month: 'September', Impressions: 6000, ProfileVisits: 4500 },
+    { month: 'October', Impressions: 5000, ProfileVisits: 4000 },
+    { month: 'November', Impressions: 7000, ProfileVisits: 4500 },
+    { month: 'December', Impressions: 8000, ProfileVisits: 5000 },
+];
+
+// Helper function to generate CSV content
+const generateCSV = (data: typeof metrics) => {
+    const headers = ["Month", "Impressions", "ProfileVisits"];
+    const rows = data.map((row) => [row.month, row.Impressions, row.ProfileVisits]);
+
+    // Combine headers and rows
+    const csvRows = [headers, ...rows];
+    return csvRows.map((row) => row.join(",")).join("\n");
+};
+
+export default ProfileGrowthSection;
